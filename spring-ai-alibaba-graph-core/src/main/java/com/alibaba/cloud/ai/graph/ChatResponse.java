@@ -6,15 +6,15 @@ import com.drew.lang.annotations.Nullable;
 public class ChatResponse {
 
 	@Nullable
-	private String data;
+	private final String data;
 
 	private ChatResponse(ChatResponseBuilder builder) {
 		this.data = builder.data;
 	}
 
-    public String getData() {
-        return data;
-    }
+	public String getData() {
+		return data;
+	}
 
 	public static ChatResponseBuilder builder() {
 		return new ChatResponseBuilder();

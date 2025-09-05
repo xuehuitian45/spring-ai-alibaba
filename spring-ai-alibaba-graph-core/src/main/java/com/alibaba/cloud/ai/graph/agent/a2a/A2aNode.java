@@ -521,10 +521,12 @@ public class A2aNode implements NodeAction {
 		message.put("parts", List.of(part));
 		message.put("role", "user");
 
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("userId", state.data().containsKey("userId") ? String.valueOf(state.data().get("userId")) : "default_user");
-        metadata.put("sessionId", state.data().containsKey("sessionId") ? String.valueOf(state.data().get("sessionId")) : "default_session");
-        message.put("metadata", metadata);
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("userId",
+				state.data().containsKey("userId") ? String.valueOf(state.data().get("userId")) : "default_user");
+		metadata.put("sessionId", state.data().containsKey("sessionId") ? String.valueOf(state.data().get("sessionId"))
+				: "default_session");
+		message.put("metadata", metadata);
 
 		Map<String, Object> params = Map.of("message", message);
 
@@ -565,10 +567,12 @@ public class A2aNode implements NodeAction {
 		message.put("parts", List.of(part));
 		message.put("role", "user");
 
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("userId", state.data().containsKey("userId") ? String.valueOf(state.data().get("userId")) : "default_user");
-        metadata.put("sessionId", state.data().containsKey("sessionId") ? String.valueOf(state.data().get("sessionId")) : "default_session");
-        message.put("metadata", metadata);
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("userId",
+				state.data().containsKey("userId") ? String.valueOf(state.data().get("userId")) : "default_user");
+		metadata.put("sessionId", state.data().containsKey("sessionId") ? String.valueOf(state.data().get("sessionId"))
+				: "default_session");
+		message.put("metadata", metadata);
 
 		Map<String, Object> params = Map.of("message", message);
 

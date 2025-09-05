@@ -88,7 +88,8 @@ public class A2aRemoteAgent extends BaseAgent {
 	}
 
 	@Override
-	public Optional<OverAllState> invoke(Map<String, Object> input, RunnableConfig runnableConfig) throws GraphStateException, GraphRunnerException {
+	public Optional<OverAllState> invoke(Map<String, Object> input, RunnableConfig runnableConfig)
+			throws GraphStateException, GraphRunnerException {
 		if (this.compiledGraph == null) {
 			this.compiledGraph = getAndCompileGraph();
 		}

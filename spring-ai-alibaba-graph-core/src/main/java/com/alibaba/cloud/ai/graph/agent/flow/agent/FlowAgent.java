@@ -112,7 +112,8 @@ public abstract class FlowAgent extends BaseAgent {
 	}
 
 	@Override
-	public Optional<OverAllState> invoke(Map<String, Object> input, RunnableConfig runnableConfig) throws GraphStateException, GraphRunnerException {
+	public Optional<OverAllState> invoke(Map<String, Object> input, RunnableConfig runnableConfig)
+			throws GraphStateException, GraphRunnerException {
 		CompiledGraph compiledGraph = getAndCompileGraph();
 		return compiledGraph.invoke(input, runnableConfig);
 	}

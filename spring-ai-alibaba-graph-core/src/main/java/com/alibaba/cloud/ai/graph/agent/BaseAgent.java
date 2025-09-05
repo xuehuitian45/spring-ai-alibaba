@@ -111,8 +111,7 @@ public abstract class BaseAgent {
 	public abstract AsyncNodeAction asAsyncNodeAction(String inputKeyFromParent, String outputKeyToParent)
 			throws GraphStateException;
 
-	public Optional<OverAllState> invoke(Map<String, Object> input)
-			throws GraphStateException, GraphRunnerException {
+	public Optional<OverAllState> invoke(Map<String, Object> input) throws GraphStateException, GraphRunnerException {
 		return invoke(input, RunnableConfig.builder().build());
 	}
 
@@ -147,91 +146,91 @@ public abstract class BaseAgent {
 	public abstract AsyncGenerator<NodeOutput> stream(Map<String, Object> input, RunnableConfig config)
 			throws GraphStateException, GraphRunnerException;
 
-    public Flux<ChatResponse> fluxStream(Map<String, Object> input) throws GraphStateException, GraphRunnerException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Logger logger = LoggerFactory.getLogger(BaseAgent.class);
-        Sinks.Many<ChatResponse> sink = Sinks.many().unicast().onBackpressureBuffer();
-        AsyncGenerator<NodeOutput> generator = stream(input);
-        executor.submit(() -> {
-            generator.forEachAsync(output -> {
-                try {
-                    logger.info("output = {}", output);
-                    String nodeName = output.node();
-                    String content;
-                    if (output instanceof StreamingOutput streamingOutput) {
-                        content = JSON.toJSONString(Map.of(nodeName, streamingOutput.chunk()));
-                    }
-                    else {
-                        JSONObject nodeOutput = new JSONObject();
-                        nodeOutput.put("data", output.state().data());
-                        nodeOutput.put("node", nodeName);
-                        content = JSON.toJSONString(nodeOutput);
-                    }
-                    sink.tryEmitNext(ChatResponse.builder().data(content).build());
-                }
-                catch (Exception e) {
-                    throw new CompletionException(e);
-                }
-            }).thenAccept(v -> {
-                sink.tryEmitComplete();
-                executor.shutdown(); // 关闭线程池
-            }).exceptionally(e -> {
-                sink.tryEmitError(e);
-                executor.shutdown(); // 关闭线程池
-                return null;
-            });
-        });
-        return sink.asFlux().doOnCancel(() -> {
-            logger.info("Client disconnected from stream");
-            executor.shutdown(); // 关闭线程池
-        }).doOnError(e -> {
-            logger.error("Error occurred during streaming", e);
-            executor.shutdown(); // 关闭线程池
-        });
-    }
+	public Flux<ChatResponse> fluxStream(Map<String, Object> input) throws GraphStateException, GraphRunnerException {
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Logger logger = LoggerFactory.getLogger(BaseAgent.class);
+		Sinks.Many<ChatResponse> sink = Sinks.many().unicast().onBackpressureBuffer();
+		AsyncGenerator<NodeOutput> generator = stream(input);
+		executor.submit(() -> {
+			generator.forEachAsync(output -> {
+				try {
+					logger.info("output = {}", output);
+					String nodeName = output.node();
+					String content;
+					if (output instanceof StreamingOutput streamingOutput) {
+						content = JSON.toJSONString(Map.of(nodeName, streamingOutput.chunk()));
+					}
+					else {
+						JSONObject nodeOutput = new JSONObject();
+						nodeOutput.put("data", output.state().data());
+						nodeOutput.put("node", nodeName);
+						content = JSON.toJSONString(nodeOutput);
+					}
+					sink.tryEmitNext(ChatResponse.builder().data(content).build());
+				}
+				catch (Exception e) {
+					throw new CompletionException(e);
+				}
+			}).thenAccept(v -> {
+				sink.tryEmitComplete();
+				executor.shutdown(); // 关闭线程池
+			}).exceptionally(e -> {
+				sink.tryEmitError(e);
+				executor.shutdown(); // 关闭线程池
+				return null;
+			});
+		});
+		return sink.asFlux().doOnCancel(() -> {
+			logger.info("Client disconnected from stream");
+			executor.shutdown(); // 关闭线程池
+		}).doOnError(e -> {
+			logger.error("Error occurred during streaming", e);
+			executor.shutdown(); // 关闭线程池
+		});
+	}
 
-    public Flux<ServerSentEvent<String>> sseStream(Map<String, Object> input)
-            throws GraphStateException, GraphRunnerException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Logger logger = LoggerFactory.getLogger(BaseAgent.class);
-        Sinks.Many<ServerSentEvent<String>> sink = Sinks.many().unicast().onBackpressureBuffer();
-        AsyncGenerator<NodeOutput> generator = stream(input);
-        executor.submit(() -> {
-            generator.forEachAsync(output -> {
-                try {
-                    logger.info("output = {}", output);
-                    String nodeName = output.node();
-                    String content;
-                    if (output instanceof StreamingOutput streamingOutput) {
-                        content = JSON.toJSONString(Map.of(nodeName, streamingOutput.chunk()));
-                    }
-                    else {
-                        JSONObject nodeOutput = new JSONObject();
-                        nodeOutput.put("data", output.state().data());
-                        nodeOutput.put("node", nodeName);
-                        content = JSON.toJSONString(nodeOutput);
-                    }
-                    sink.tryEmitNext(ServerSentEvent.builder(content).build());
-                }
-                catch (Exception e) {
-                    throw new CompletionException(e);
-                }
-            }).thenAccept(v -> {
-                sink.tryEmitComplete();
-                executor.shutdown(); // 关闭线程池
-            }).exceptionally(e -> {
-                sink.tryEmitError(e);
-                executor.shutdown(); // 关闭线程池
-                return null;
-            });
-        });
-        return sink.asFlux().doOnCancel(() -> {
-            logger.info("Client disconnected from stream");
-            executor.shutdown(); // 关闭线程池
-        }).doOnError(e -> {
-            logger.error("Error occurred during streaming", e);
-            executor.shutdown(); // 关闭线程池
-        });
-    }
+	public Flux<ServerSentEvent<String>> sseStream(Map<String, Object> input)
+			throws GraphStateException, GraphRunnerException {
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Logger logger = LoggerFactory.getLogger(BaseAgent.class);
+		Sinks.Many<ServerSentEvent<String>> sink = Sinks.many().unicast().onBackpressureBuffer();
+		AsyncGenerator<NodeOutput> generator = stream(input);
+		executor.submit(() -> {
+			generator.forEachAsync(output -> {
+				try {
+					logger.info("output = {}", output);
+					String nodeName = output.node();
+					String content;
+					if (output instanceof StreamingOutput streamingOutput) {
+						content = JSON.toJSONString(Map.of(nodeName, streamingOutput.chunk()));
+					}
+					else {
+						JSONObject nodeOutput = new JSONObject();
+						nodeOutput.put("data", output.state().data());
+						nodeOutput.put("node", nodeName);
+						content = JSON.toJSONString(nodeOutput);
+					}
+					sink.tryEmitNext(ServerSentEvent.builder(content).build());
+				}
+				catch (Exception e) {
+					throw new CompletionException(e);
+				}
+			}).thenAccept(v -> {
+				sink.tryEmitComplete();
+				executor.shutdown(); // 关闭线程池
+			}).exceptionally(e -> {
+				sink.tryEmitError(e);
+				executor.shutdown(); // 关闭线程池
+				return null;
+			});
+		});
+		return sink.asFlux().doOnCancel(() -> {
+			logger.info("Client disconnected from stream");
+			executor.shutdown(); // 关闭线程池
+		}).doOnError(e -> {
+			logger.error("Error occurred during streaming", e);
+			executor.shutdown(); // 关闭线程池
+		});
+	}
 
 }
