@@ -70,21 +70,6 @@ public class ParallelAgent extends FlowAgent {
 	}
 
 	@Override
-	public Optional<OverAllState> invoke(Map<String, Object> input) throws GraphStateException, GraphRunnerException {
-		CompiledGraph compiledGraph = getAndCompileGraph();
-		return compiledGraph.invoke(input);
-	}
-
-	@Override
-	public AsyncGenerator<NodeOutput> stream(Map<String, Object> input)
-			throws GraphStateException, GraphRunnerException {
-		if (this.compiledGraph == null) {
-			this.compiledGraph = getAndCompileGraph();
-		}
-		return this.compiledGraph.stream(input);
-	}
-
-	@Override
 	protected StateGraph buildSpecificGraph(FlowGraphBuilder.FlowGraphConfig config) throws GraphStateException {
 		// Add parallel-specific properties to config
 		config.customProperty("mergeStrategy", this.mergeStrategy);
